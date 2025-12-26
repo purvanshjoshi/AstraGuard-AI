@@ -186,6 +186,7 @@ pytest tests/ --cov=memory_engine --cov=anomaly_agent
 ## 📚 Documentation
 
 **Core Documentation:**
+- 🚀 [**Final Technical Report (A to Z)**](docs/FINAL_REPORT.md)
 - 📘 [Technical Documentation](docs/TECHNICAL.md)
 - 📋 [Hackathon Proposal - Track 1: Agentic AI](PROPOSAL.md)
 - 🏗️ [System Architecture & Technical Specifications](ARCHITECTURE.md)
