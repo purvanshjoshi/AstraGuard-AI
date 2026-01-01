@@ -1,316 +1,87 @@
 <div align="center">
   <img src="assets/logo.png" width="400" alt="AstraGuard AI Logo">
-</div>
 
-# 🛰️ AstraGuard AI - Synaptix Frontier AI Hack
+  # AstraGuard AI
+  ### ECWoC '26 Featured Project
 
-[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
-[![Python Version](https://img.shields.io/badge/Python-3.9%2B-blue.svg)](https://www.python.org/downloads/)
-[![Code style: black](https://img.shields.io/badge/code%20style-black-000000.svg)](https://github.com/psf/black)
-[![Pathway](https://img.shields.io/badge/Built%20with-Pathway-3535EE.svg)](https://pathway.com/)
-
-<div align="center">
-
-**🌐 [Landing SITE](https://ide-birch-01200854.figma.site/) | 📊 [Dashboard](https://astraguarddashboard.lovable.app/) | 📚 [Documentation](docs/TECHNICAL.md) |📸 [Intro](https://drive.google.com/file/d/1pKkZosBJdk8tvfBrqNelPeWyY265eOcI/view?usp=drive_link) |🗂️ [GDrive](https://drive.google.com/drive/folders/1j3Ra1_q6v-lEavG40eR2mRzVLcqDYYKH)**
+  [![ECWoC '26](https://img.shields.io/badge/ECWoC-'26-blueviolet?style=for-the-badge)](https://elitecoders.xyz)
+  [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg?style=for-the-badge)](https://opensource.org/licenses/MIT)
+  [![Python](https://img.shields.io/badge/python-3670A0?style=for-the-badge&logo=python&logoColor=ffdd54)](https://www.python.org/)
+  [![React](https://img.shields.io/badge/react-%2320232a.svg?style=for-the-badge&logo=react&logoColor=%2361DAFB)](https://reactjs.org/)
+  [![NodeJS](https://img.shields.io/badge/node.js-6DA55F?style=for-the-badge&logo=node.js&logoColor=white)](https://nodejs.org/)
+  [![FastAPI](https://img.shields.io/badge/FastAPI-005571?style=for-the-badge&logo=fastapi)](https://fastapi.tiangolo.com/)
 
 </div>
 
-> **Streaming anomalies. Self-updating memory. Decisions that trigger actions.**
+## 🚀 About the Project
+**AstraGuard AI** is an open source security-focused system that combines **AI-assisted threat detection** with **practical offensive security tooling**. 
 
-AstraGuard AI is an intelligent autonomous fault detection and recovery system for CubeSats, evolved for the **Synaptix Frontier AI Hackathon @ IIT Madras**. The system demonstrates **streaming awareness, adaptive memory, and autonomous decision-making** using Pathway's real-time engine and biologically-inspired memory architecture.
+The project is built to help students, developers, and early security practitioners:
+- Test applications
+- Analyze risks
+- Understand vulnerabilities through automation and structured reporting
 
----
-
-## 🎯 What's Different Here
-
-- ✅ **Works on streams, not static input** - Real-time telemetry processing
-- ✅ **Memory evolves and prunes itself** - Temporal weighting with decay curves
-- ✅ **Agent reasons before acting** - Explainable decision traces
-- ✅ **Actions feed back into memory** - Continuous learning loop
-- ✅ **Dashboard outputs are structured** - Validated, predictable responses
+The core engine handles security operations, while the AI layer focuses on attack surface analysis, smart payload generation, and guided exploitation where allowed. The audience is primarily learners who want to bridge the gap between theory and real security workflows without getting lost in complexity.
 
 ---
 
-## ✨ Key Features
-
-| Component | Description |
-|-----------|-------------|
-| **🛰️ Real-time Streaming** | Pathway Engine processes data continuously at 5Hz |
-| **🧠 Adaptive Memory** | Temporal weighting + recurrence scoring + safe decay |
-| **🤖 Agentic Decisions** | detect → recall → reason → act → learn loop |
-| **⚡ Auto-Recovery** | Concrete actions (not just alerts) with < 2s latency |
-| **📊 Premium Dashboard** | Glassmorphism UI with Frontier Mode visualization |
-| **🔬 Experimental Feature** | Anomaly Recurrence Resonance Score (signal reinforcement) |
+## 🎯 Project Goals
+- **Build a stable AI assistant module** for smart vulnerability detection
+- **Create well-scoped beginner and intermediate issues** for contributors
+- **Improve documentation and onboarding flow** for new contributors
+- **Add automated test pipelines** for payload validation and attack surface checks
+- **Ship a working MVP** by the end of the program with measurable test coverage
 
 ---
 
-## 🏗️ System Architecture
-
-```mermaid
-graph TD
-    A["🛰️ Telemetry Stream (Pathway)"] -->|Live Data| B["📊 Embedding Encoder"]
-    B -->|Vectors| C["🧠 Adaptive Memory Store"]
-    C -->|Context| D["🤖 Anomaly Reasoning Agent"]
-    B -->|Current Event| D
-    D -->|Decision| E["⚡ Response Orchestrator"]
-    E -->|Actions| F["🛰️ System Recovery"]
-    F -->|Feedback| C
-    
-    D -.->|Reasoning Trace| G["📊 Dashboard"]
-    C -.->|Memory State| G
-    E -.->|Action Status| G
-```
-
-### Modular Architecture
-
-```
-AstraGuard/
-├── memory_engine/          # Adaptive memory with temporal weighting
-├── anomaly_agent/          # Decision loop + reasoning engine
-├── response_orchestrator/  # Workflow registry + action triggers
-├── encoder/                # Event embedding
-├── pathway_ingestion/      # Stream handlers
-├── dashboard/              # Streamlit UI
-├── tests/                  # Comprehensive test suite
-├── examples/               # Run-ready demos
-└── docs/                   # Architecture & design docs
-```
+## 🛠️ Tech Stack
+- **Frontend**: React
+- **Backend**: Node.js, FastAPI
+- **Security Engine**: Python
+- **AI/ML**: LangChain, Local LLMs (Ollama)
+- **Database**: PostgreSQL / MongoDB
 
 ---
 
-## 🚀 Getting Started
+## 👥 Looking For Contributors
+We are looking for **6–10 contributors** for ECWoC '26, split roughly as follows:
+
+- **3 Frontend Contributors** (React)
+- **3 Backend Contributors** (Node.js/FastAPI)
+- **2–4 Security Contributors** (Python + lab-based testing)
+
+> **Note**: Skill levels can vary, but contributions should be scoped, clean, and aligned with security best practices. No random PRs just for streaks.
+
+---
+
+## 📦 Installation & Setup
 
 ### Prerequisites
 - Python 3.9+
-- pip & git
-
-### Installation
-
-```bash
-git clone https://github.com/sr-857/AstraGuard.git
-cd AstraGuard
-pip install -r requirements.txt
-```
-
-### Verify Installation
-
-```bash
-python verify_install.py
-```
+- Node.js 16+
+- Git
 
 ### Quick Start
-
-**Run the demo:**
 ```bash
-python examples/run_demo.py
-```
+# Clone the repository
+git clone https://github.com/sr-857/AstraGuard32.git
+cd AstraGuard32
 
-**Launch dashboard:**
-```bash
+# Install Python dependencies
+pip install -r requirements.txt
+
+# Start the dashboard (if applicable)
 streamlit run dashboard/app.py
 ```
-
-> [!TIP]
-> Enable **Frontier Mode** in the dashboard to visualize adaptive memory flow and BDH neural activity!
-
----
-
-## 📊 Performance Metrics
-
-| Metric | Target | Actual |
-|--------|--------|--------|
-| Detection → Decision → Action | < 2s | ~325ms |
-| Memory Retrieval | < 50ms | ~38ms |
-| Embedding Encoding | < 20ms | ~12ms |
-| Memory Updates | Auto | ✓ Real-time |
-| Explainability | LLM-assisted | ✓ Plain language |
-
----
-
-## 🏆 Build-athon Tracks
-
-### 🤖 Track 1: Agentic AI (Applied GenAI)
-**Mission:** Reactive AI agent system for live threat detection and autonomous response.
-
-**Workflow:**
-```
-Live Input → Anomaly Detection → Memory Recall → Intelligent Decision → Automated Action
-```
-
-**Key Technologies:**
-- Pathway Engine for streaming
-- Adaptive memory with temporal weighting
-- LLM-assisted reasoning
-- Concrete action workflows
-
-### 🧠 Track 2: The Frontier (Research & Deep Tech)
-**Mission:** Biologically-inspired memory using Dragon Hatchling (BDH) architecture.
-
-**Innovation:**
-- Sparse neural activation
-- Evolving memory (not static context)
-- First-principles memory dynamics
-- Continuous learning without retraining
-
----
-
-## 🔬 Experimental Feature: Recurrence Resonance
-
-**Concept:** Signal reinforcement inspired by physics
-
-**Formula:**
-```python
-resonance = base_importance × (1 + 0.3 × log(1 + recurrence_count)) × time_decay
-```
-
-**Impact:** ~10 lines of code, demonstrates first-principles thinking
-
----
-
-## 🧪 Testing
-
-**Run all tests:**
-```bash
-pytest tests/ -v
-```
-
-**Run specific tests:**
-```bash
-pytest tests/test_memory_store.py -v
-pytest tests/test_recurrence_scorer.py -v
-```
-
-**Test coverage:**
-```bash
-pytest tests/ --cov=memory_engine --cov=anomaly_agent
-```
-
----
-
-## 📚 Documentation
-
-**Core Documentation:**
-- 🏆 [**The A-to-Z Technical Master Report**](docs/A_TO_Z_REPORT.md)
-- 🚀 [Final Technical Report (Summary)](docs/FINAL_REPORT.md)
-- 📘 [Technical Documentation](docs/TECHNICAL.md)
-- 🏗️ [System Architecture & Technical Specifications](ARCHITECTURE.md)
-- 🌐 [Website Design Specification](WEBSITE_DESIGN.md)
-- 🎨 [Website Redesign - Round 2 Enhanced Proposal](WEBSITE_REDESIGN.md)
-
-**Additional Resources:**
-- 📖 [Pathway Documentation](https://pathway.com/docs)
-- 🐉 [Dragon Hatchling (BDH) Research](https://github.com/pathwaycom/bdh)
-- 🛠️ [LLM App Framework](https://github.com/pathwaycom/llm-app)
-
----
-
-## 🔧 Configuration
-
-### Defense Thresholds
-Edit `classifier/fault_classifier.py`:
-- **Power Threat**: Voltage < 7.3V
-- **Thermal Threat**: Temperature > 32°C
-- **Attitude Threat**: |Gyro| > 0.05 rad/s
-
-### Memory Parameters
-Edit `memory_engine/memory_store.py`:
-- **Decay Lambda**: 0.1 (temporal decay rate)
-- **Max Capacity**: 10,000 events
-- **Retention**: 24 hours (critical events exempt)
-
-### Resonance Tuning
-Edit `memory_engine/recurrence_scorer.py`:
-- **Resonance Factor**: 0.3 (amplification for recurrence)
-
----
-
-## 📈 System Components
-
-### Memory Engine (`memory_engine/`)
-- **Adaptive Memory Store**: Temporal weighting, auto-pruning, persistence
-- **Recurrence Scorer**: Signal reinforcement for repeated patterns
-- **Decay Policy**: Safe pruning with critical event protection
-- **Replay Engine**: Security flight recorder functionality
-
-### Anomaly Agent (`anomaly_agent/`)
-- **Decision Loop**: detect → recall → reason → act → learn
-- **Reasoning Engine**: Plain-language decision summaries
-- **Confidence Scorer**: Decision confidence calculation
-
-### Response Orchestrator (`response_orchestrator/`)
-- **Workflow Registry**: Maps decisions to concrete actions
-- **Action Implementations**: Real system commands (not just prints)
-- **Cooldown Manager**: Prevents action spam
 
 ---
 
 ## 🤝 Contributing
-
-1. Fork the repository
-2. Create feature branch (`git checkout -b feature/amazing-feature`)
-3. Commit changes (`git commit -m 'Add amazing feature'`)
-4. Push to branch (`git push origin feature/amazing-feature`)
-5. Open Pull Request
-
-**Guidelines:**
-- Follow PEP 8
-- Add type hints
-- Include docstrings
-- Write unit tests
-- Update documentation
+Please read [CONTRIBUTING.md](CONTRIBUTING.md) for details on our code of conduct, and the process for submitting pull requests to us.
 
 ---
 
-## 📄 Citation
-
-```bibtex
-@misc{AstraGuardAI2025,
-  author = {Roy, Subhajit},
-  title = {AstraGuard AI: Streaming Anomaly Detection with Adaptive Memory},
-  year = {2025},
-  publisher = {GitHub},
-  journal = {Synaptix Frontier AI Hackathon @ IIT Madras},
-  howpublished = {\url{https://github.com/sr-857/AstraGuard}},
-  note = {Track 1: Agentic AI (Applied GenAI)}
-}
-```
-
----
-
-## 📝 License
-
-MIT License - see [LICENSE](LICENSE)
-
----
-
-## 🙏 Acknowledgments
-
-- **Pathway**: Real-time streaming engine
-- **Streamlit**: Dashboard framework
-- **scikit-learn**: ML algorithms
-- **NumPy**: Numerical computing
-- **pytest**: Testing framework
-
----
-
-## 📧 Contact
-
-**Author**: Subhajit Roy  
-**Institution**: Indian Institute of Technology (IIT), Madras  
-**Hackathon**: Synaptix Frontier AI Hack  
-**Repository**: https://github.com/sr-857/AstraGuard
-
----
-
-## 🗺️ Roadmap
-
-- [x] **v1.0**: Basic anomaly detection
-- [x] **v2.0**: Modular adaptive memory engine
-- [x] **v2.1**: Agentic decision loop
-- [ ] **v2.2**: Complete response orchestration
-- [ ] **v2.3**: Pathway streaming integration
-- [ ] **v3.0**: Production deployment package
-
----
-
-**AstraGuard AI** | *Protecting spacecraft through intelligent autonomy* 🛰️✨
+<div align="center">
+  <sub>Part of <b>Elite Coders Winter of Code '26</b></sub><br>
+  <sub>Empowering the next generation of open-source contributors through real-world projects and mentorship.</sub>
+</div>
