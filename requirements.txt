@@ -32,7 +32,7 @@ thrift>=0.10.0
 deprecated>=1.2.0
 
 # Infrastructure & coordination
-redis==5.0.1
+redis[hiredis]==5.0.1  # hiredis provides async support for redis.asyncio module
 sqlalchemy>=2.0.0,<3.0
 
 # Utilities

@@ -1,83 +1,226 @@
 #!/usr/bin/env python3
+# -*- coding: utf-8 -*-
 import argparse
 import sys
 import subprocess
 import os
+import json
+import time
+from datetime import datetime
+from pathlib import Path
+from typing import List, Any, Optional
+
+# Enable UTF-8 output on Windows
+if sys.platform == "win32":
+    import io
+    sys.stdout = io.TextIOWrapper(sys.stdout.buffer, encoding="utf-8")
+    sys.stderr = io.TextIOWrapper(sys.stderr.buffer, encoding="utf-8")
+
+from models.feedback import FeedbackEvent, FeedbackLabel
 
 
-def run_telemetry():
+class FeedbackCLI:
+    """Interactive feedback review CLI for operator validation."""
+
+    @staticmethod
+    def load_pending() -> List[FeedbackEvent]:
+        """Load and validate pending events from feedback_pending.json."""
+        path = Path("feedback_pending.json")
+        if not path.exists():
+            return []
+
+        try:
+            with open(path) as f:
+                raw = json.load(f)
+            if not isinstance(raw, list):
+                return []
+            return [FeedbackEvent.model_validate(e) for e in raw]
+        except (json.JSONDecodeError, Exception):
+            print("⚠️  Invalid pending store, cleared.")
+            path.unlink(missing_ok=True)
+            return []
+
+    @staticmethod
+    def save_processed(events: List[dict[str, Any]]) -> None:
+        """Save processed events to feedback_processed.json."""
+        Path("feedback_processed.json").write_text(
+            json.dumps(events, separators=(",", ":"))
+        )
+
+    @staticmethod
+    def review_interactive() -> None:
+        """Main interactive review loop for operator feedback."""
+        pending = FeedbackCLI.load_pending()
+        if not pending:
+            print("✅ No pending feedback events.")
+            return
+
+        print(f"\n📋 {len(pending)} pending events found:\n")
+
+        for i, event in enumerate(pending, 1):
+            print(f"\n{i}. Fault: {event.fault_id}")
+            print(f"   Type: {event.anomaly_type}")
+            print(f"   Action: {event.recovery_action}")
+            print(f"   Phase: {event.mission_phase}")
+            print(f"   Time: {event.timestamp}")
+
+            while True:
+                label = (
+                    input("\nLabel [correct/insufficient/wrong/q-uit]: ")
+                    .strip()
+                    .lower()
+                )
+                if label == "q":
+                    sys.exit(0)
+                try:
+                    event.label = FeedbackLabel(label)
+                    break
+                except ValueError:
+                    print("❌ Invalid: 'correct', 'insufficient', 'wrong'")
+
+            notes = input("Notes (optional, Enter to skip): ").strip()
+            if notes:
+                event.operator_notes = notes
+
+            print(f"✅ Saved: {event.label} - {event.fault_id}")
+
+        processed = [json.loads(e.model_dump_json()) for e in pending]
+        FeedbackCLI.save_processed(processed)
+        Path("feedback_pending.json").unlink(missing_ok=True)
+        print(f"\n🎉 {len(pending)} events processed → review complete! → ready for #53 pinning")
+
+
+def _get_phase_description(phase: str) -> str:
+    descriptions = {
+        "LAUNCH": "Rocket ascent and orbital insertion",
+        "DEPLOYMENT": "System stabilization and checkout",
+        "NOMINAL_OPS": "Standard mission operations",
+        "PAYLOAD_OPS": "Science/mission payload operations",
+        "SAFE_MODE": "Minimal power survival mode",
+    }
+    return descriptions.get(phase, "Unknown phase")
+
+
+def run_status(args: argparse.Namespace) -> None:
+    """Display comprehensive system status and health information."""
+    try:
+        from core.component_health import get_health_monitor, HealthStatus
+        from state_machine.state_engine import StateMachine
+        import platform
+
+        print("\n" + "=" * 70)
+        print("🛰️  AstraGuard AI - System Status Report")
+        print("=" * 70)
+        print(f"Generated: {datetime.now().strftime('%Y-%m-%d %H:%M:%S')}")
+        print(f"Platform: {platform.system()} {platform.release()} ({platform.machine()})")
+        print(f"Python: {platform.python_version()}")
+        print("=" * 70)
+
+        print("\n📊 COMPONENT HEALTH STATUS")
+        print("-" * 70)
+
+        health_monitor = get_health_monitor()
+        components = health_monitor.get_all_health()
+
+        degraded_count = 0
+        failed_count = 0
+
+        if not components:
+            print("  ⚠️  No components registered yet.")
+        else:
+            for name, info in sorted(components.items()):
+                status = info.get("status", "unknown")
+                if status == "healthy":
+                    icon = "✅"
+                elif status == "degraded":
+                    icon = "⚠️ "
+                    degraded_count += 1
+                elif status == "failed":
+                    icon = "❌"
+                    failed_count += 1
+                else:
+                    icon = "❓"
+
+                print(f"  {icon} {name:30s} {status:10s}", end="")
+                if info.get("fallback_active"):
+                    print("  [FALLBACK MODE]", end="")
+                if info.get("error_count", 0) > 0:
+                    print(f"  (Errors: {info['error_count']})", end="")
+                print()
+
+                if args.verbose and info.get("last_error"):
+                    print(f"       Last Error: {info['last_error']}")
+
+        print("\n🚀 MISSION PHASE")
+        print("-" * 70)
+        try:
+            sm = StateMachine()
+            phase = sm.current_phase.value
+            print(f"  Current Phase: {phase}")
+            print(f"  Description:   {_get_phase_description(phase)}")
+        except Exception:
+            print("  ⚠️  Unable to determine mission phase.")
+
+        print("\n💡 RECOMMENDATIONS")
+        print("-" * 70)
+        if degraded_count or failed_count:
+            print("  ⚠️  Some components need attention. Check logs or run with --verbose.")
+        else:
+            print("  ✅ All systems operational.")
+
+        print("\n" + "=" * 70 + "\n")
+
+        if failed_count > 0:
+            sys.exit(1)
+        elif degraded_count > 0:
+            sys.exit(2)
+        sys.exit(0)
+
+    except ImportError:
+        print("❌ Missing dependencies. Try installing from requirements.txt.")
+        sys.exit(3)
+
+
+def run_telemetry() -> None:
     subprocess.run(
         [sys.executable, os.path.join("astraguard", "telemetry", "telemetry_stream.py")]
     )
 
 
-def run_dashboard():
+def run_dashboard() -> None:
     subprocess.run(["streamlit", "run", os.path.join("dashboard", "app.py")])
 
 
-def run_simulation():
+def run_simulation() -> None:
     subprocess.run([sys.executable, os.path.join("simulation", "attitude_3d.py")])
 
 
-def run_classifier():
+def run_classifier() -> None:
     subprocess.run([sys.executable, os.path.join("classifier", "fault_classifier.py")])
 
 
-def run_logs(args):
-    cmd = [sys.executable, os.path.join("logs", "timeline.py")]
-    if args.export:
-        cmd.extend(["--export", args.export])
-    subprocess.run(cmd)
-
-
-def run_api(args):
-    cmd = [sys.executable, "run_api.py"]
-    if args.host:
-        cmd.extend(["--host", args.host])
-    if args.port:
-        cmd.extend(["--port", str(args.port)])
-    if args.reload:
-        cmd.append("--reload")
-    subprocess.run(cmd)
-
-
-def main():
+def main() -> None:
     parser = argparse.ArgumentParser(
         description="AstraGuard-AI: Unified CLI\nUse `cli.py <subcommand>`"
     )
-    subparsers = parser.add_subparsers(dest="command")
+    sub = parser.add_subparsers(dest="command")
 
-    subparsers.add_parser("telemetry", help="Run telemetry stream generator")
-    subparsers.add_parser("dashboard", help="Run Streamlit dashboard UI")
-    subparsers.add_parser("simulate", help="Run 3D attitude simulation")
-    subparsers.add_parser("classify", help="Run fault classifier tests")
-    logs_parser = subparsers.add_parser("logs", help="Event log utilities")
-    logs_parser.add_argument(
-        "--export",
-        metavar="PATH",
-        help="Export event log to file (same as logs/timeline.py)",
-    )
+    sp = sub.add_parser("status", help="Show system status and health")
+    sp.add_argument("--verbose", "-v", action="store_true")
 
-    api_parser = subparsers.add_parser("api", help="Run REST API server")
-    api_parser.add_argument(
-        "--host",
-        default="0.0.0.0",
-        help="Host to bind to (default: 0.0.0.0)"
-    )
-    api_parser.add_argument(
-        "--port",
-        type=int,
-        default=8000,
-        help="Port to bind to (default: 8000)"
-    )
-    api_parser.add_argument(
-        "--reload",
-        action="store_true",
-        help="Enable auto-reload for development"
-    )
+    sub.add_parser("telemetry", help="Run telemetry stream generator")
+    sub.add_parser("dashboard", help="Run Streamlit dashboard UI")
+    sub.add_parser("simulate", help="Run 3D attitude simulation")
+    sub.add_parser("classify", help="Run fault classifier tests")
+
+    fp = sub.add_parser("feedback", help="Operator feedback review interface")
+    fp.add_argument("action", choices=["review"])
 
     args = parser.parse_args()
-    if args.command == "telemetry":
+
+    if args.command == "status":
+        run_status(args)
+    elif args.command == "telemetry":
         run_telemetry()
     elif args.command == "dashboard":
         run_dashboard()
@@ -85,10 +228,8 @@ def main():
         run_simulation()
     elif args.command == "classify":
         run_classifier()
-    elif args.command == "logs":
-        run_logs(args)
-    elif args.command == "api":
-        run_api(args)
+    elif args.command == "feedback" and args.action == "review":
+        FeedbackCLI.review_interactive()
     else:
         parser.print_help()
 
