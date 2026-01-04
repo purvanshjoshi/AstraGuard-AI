@@ -28,7 +28,7 @@ class ThreadSafeFeedbackStore:
         with self.lock:
             try:
                 pending = self._load()
-            except (FileNotFoundError, json.JSONDecodeError):
+            except FileNotFoundError:
                 pending = []
             pending.append(json.loads(event.model_dump_json()))
             self._dump(pending)
@@ -36,10 +36,14 @@ class ThreadSafeFeedbackStore:
     def _load(self) -> list[Any]:
         """Load pending events from disk."""
         with open(self.path, "r") as f:
-            data = json.loads(f.read())
-            if isinstance(data, list):
-                return data
-            return []
+            try:
+                data = json.loads(f.read())
+                if isinstance(data, list):
+                    return data
+                return []
+            except json.JSONDecodeError as e:
+                logger.warning(f"Corrupted feedback JSON file: {e}")
+                return []
 
     def _dump(self, events: list[Any]) -> None:
         """Write pending events to disk (compact format)."""

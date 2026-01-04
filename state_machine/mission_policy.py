@@ -31,8 +31,7 @@ class PolicyManager:
         """Check if an action is allowed in the current phase."""
         config = self.get_phase_config(phase_name)
         if not config:
-            return True  # Default to allow if no policy (or fail safe?) -> Let's default allow for dev, strict for prod.
-            # Ideally strict: return False. But for hackathon/demo, True prevents blockers.
+            return False  # Fail-secure: default deny missing policies
 
         allowed = config.get("allowed_actions", [])
         forbidden = config.get("forbidden_actions", [])
