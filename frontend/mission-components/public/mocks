@@ -1,17 +1,15 @@
 {
-  "satellites": [
-    {"id": "sat-001", "orbitSlot": "LEO-1", "status": "Nominal", "latency": 42, "task": "Data Dump", "signal": 92},
-    {"id": "sat-002", "orbitSlot": "LEO-2", "status": "Degraded", "latency": 187, "task": "Orbit Adjust", "signal": 67},
-    {"id": "sat-003", "orbitSlot": "LEO-3", "status": "Nominal", "latency": 56, "task": "Imaging", "signal": 89},
-    {"id": "sat-004", "orbitSlot": "LEO-4", "status": "Nominal", "latency": 39, "task": "Standby", "signal": 95},
-    {"id": "sat-005", "orbitSlot": "LEO-5", "status": "Critical", "latency": 0, "task": "Offline", "signal": 0},
-    {"id": "sat-006", "orbitSlot": "LEO-6", "status": "Nominal", "latency": 63, "task": "Telemetry", "signal": 84}
-  ],
-  "phases": [
-    {"name": "Launch", "progress": 100, "eta": "Complete", "isActive": false},
-    {"name": "Orbit Acquisition", "progress": 100, "eta": "Complete", "isActive": false},
-    {"name": "Stable Orbit", "progress": 73, "eta": "2h14m", "isActive": true},
-    {"name": "Maneuver", "progress": 0, "eta": "2h14m", "isActive": false},
-    {"name": "Reentry", "progress": 0, "eta": "TBD", "isActive": false}
+  "mission": {
+    "name": "Astra-01",
+    "phase": "Stable Orbit",
+    "status": "Nominal",
+    "updated": "14:32:15",
+    "anomalyCount": 0
+  },
+  "navItems": [
+    { "label": "Dashboard", "icon": "📊" },
+    { "label": "Satellites", "icon": "🛰️" },
+    { "label": "Alerts", "icon": "🚨" },
+    { "label": "Settings", "icon": "⚙️" }
   ]
 }

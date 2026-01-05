@@ -1,19 +1,19 @@
-export interface Satellite {
-  id: string;           // "sat-001"
-  orbitSlot: string;    // "LEO-3"
-  status: 'Nominal' | 'Degraded' | 'Critical';
-  latency: number;      // 45ms
-  task: string;         // "Data Dump"
-  signal: number;       // 87%
+export interface MissionState {
+  name: string;
+  phase: string;
+  status: string;
+  updated: string;
+  anomalyCount: number;
 }
 
-export interface MissionPhase {
-  name: string;         // "Stable Orbit"
-  progress: number;     // 73
-  eta: string;          // "2h14m"
-  isActive: boolean;
+export type TabType = 'mission' | 'systems';
+
+export interface DashboardProps {
+  data?: MissionState;
 }
 
-export interface MissionPanelProps {
-  onSatelliteSelect?: (satellite: Satellite) => void;
+export interface NavItem {
+  icon: string;
+  label: string;
+  href: string;
 }
