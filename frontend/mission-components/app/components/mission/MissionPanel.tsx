@@ -26,7 +26,7 @@ export const MissionPanel: React.FC<{ onSelectSatellite?: (satId: string) => voi
   return (
     <div className="space-y-8 max-w-7xl mx-auto">
       {/* Top: Satellite Tracker from #87 */}
-      <section className="panel-holo rounded-2xl p-6">
+      <section className="panel-holo rounded-2xl p-6 animate-slide-up delay-100">
         <h2 className="text-2xl font-bold mb-6 text-teal-400 glow-teal flex items-center tracking-wide uppercase">
           Satellite Status{' '}
           <span className="ml-4 text-xs font-mono bg-teal-500/10 border border-teal-500/30 text-teal-300 px-3 py-1 rounded-sm">
@@ -51,7 +51,7 @@ export const MissionPanel: React.FC<{ onSelectSatellite?: (satId: string) => voi
       {/* 3-Column Layout: Map (2x) + Feed (1x) */}
       <div className="grid grid-cols-1 lg:grid-cols-3 gap-6">
         {/* Map Section (2x width) */}
-        <section className="lg:col-span-2 panel-holo rounded-2xl p-4">
+        <section className="lg:col-span-2 panel-holo rounded-2xl p-4 animate-slide-up delay-200">
           <h3 className="text-lg font-bold text-teal-400 mb-4 glow-teal uppercase tracking-widest pl-2 border-l-2 border-teal-500">Orbit Visualization</h3>
           <OrbitMap
             satellites={satellites}
@@ -65,7 +65,7 @@ export const MissionPanel: React.FC<{ onSelectSatellite?: (satId: string) => voi
         </section>
 
         {/* Anomaly Feed (1x width) */}
-        <section className="panel-holo rounded-2xl p-0 border-magenta-500/30">
+        <section className="panel-holo rounded-2xl p-0 border-magenta-500/30 animate-slide-up delay-300">
           <AnomalyFeed
             anomalies={anomalies}
             onAcknowledge={handleAcknowledgeAnomaly}
@@ -77,7 +77,7 @@ export const MissionPanel: React.FC<{ onSelectSatellite?: (satId: string) => voi
 
       {/* Selected Items Debug Panel */}
       {(selectedSat || selectedAnomaly) && (
-        <div className="panel-holo rounded-xl p-4 grid grid-cols-1 md:grid-cols-2 gap-4 text-sm border-t border-teal-500/50">
+        <div className="panel-holo rounded-xl p-4 grid grid-cols-1 md:grid-cols-2 gap-4 text-sm border-t border-teal-500/50 animate-slide-up delay-100">
           {selectedSat && (
             <div>
               <h4 className="font-bold text-teal-400 mb-2 uppercase tracking-widest">Selected Satellite</h4>

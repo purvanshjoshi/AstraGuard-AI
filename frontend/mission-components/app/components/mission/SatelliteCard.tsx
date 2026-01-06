@@ -53,7 +53,7 @@ export const SatelliteCard: React.FC<Props> = ({
       onClick={onClick}
     >
       <div className="flex items-center justify-between mb-2">
-        <span className="text-sm font-mono opacity-75">LEO-{orbitSlot}</span>
+        <span className="text-sm font-mono opacity-75 hover-glitch transition-all duration-200">LEO-{orbitSlot}</span>
         <span className="text-xl">{statusConfig.icon}</span>
       </div>
       <div className="text-lg font-bold font-mono text-white mb-1 truncate">{status}</div>
