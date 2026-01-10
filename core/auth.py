@@ -31,6 +31,7 @@ from fastapi.security import HTTPBearer, HTTPAuthorizationCredentials
 from pydantic import BaseModel, Field
 
 from astraguard.logging_config import get_logger
+from core.audit_logger import get_audit_logger, AuditEventType
 
 # Constants
 API_KEY_LENGTH = 32
@@ -297,6 +298,17 @@ class AuthManager:
         self._save_users()
 
         self.logger.info("user_created", user_id=user_id, username=username, role=role.value)
+
+        # Audit logging
+        audit_logger = get_audit_logger()
+        audit_logger.log_event(
+            AuditEventType.USER_CREATED,
+            user_id=user_id,
+            resource="user",
+            action="create",
+            details={"username": username, "email": email, "role": role.value}
+        )
+
         return user
 
     def get_user(self, user_id: str) -> Optional[User]:
@@ -345,6 +357,17 @@ class AuthManager:
         self._save_api_keys()
 
         self.logger.info("api_key_created", key_id=key_id, user_id=user_id, name=name)
+
+        # Audit logging
+        audit_logger = get_audit_logger()
+        audit_logger.log_event(
+            AuditEventType.API_KEY_CREATED,
+            user_id=user_id,
+            resource="api_key",
+            action="create",
+            details={"key_id": key_id, "name": name, "expiration_days": expiration_days, "rate_limit": rate_limit}
+        )
+
         return api_key, api_key_obj
 
     def validate_api_key(self, provided_key: str) -> Optional[Tuple[User, APIKey]]:
@@ -362,9 +385,31 @@ class AuthManager:
                         self.update_user_last_login(user.id)
 
                         self.logger.info("api_key_validated", key_id=api_key.id, user_id=user.id)
+
+                        # Audit logging for successful authentication
+                        audit_logger = get_audit_logger()
+                        audit_logger.log_event(
+                            AuditEventType.AUTHENTICATION_SUCCESS,
+                            user_id=user.id,
+                            resource="api_key",
+                            action="validate",
+                            details={"key_id": api_key.id, "key_name": api_key.name}
+                        )
+
                         return user, api_key
 
         self.logger.warning("api_key_validation_failed", key_provided=True)
+
+        # Audit logging for failed authentication
+        audit_logger = get_audit_logger()
+        audit_logger.log_event(
+            AuditEventType.AUTHENTICATION_FAILURE,
+            resource="api_key",
+            action="validate",
+            status="failure",
+            details={"reason": "invalid_api_key"}
+        )
+
         return None
 
     def revoke_api_key(self, key_id: str, user_id: str):
@@ -381,6 +426,16 @@ class AuthManager:
 
         self.logger.info("api_key_revoked", key_id=key_id, user_id=user_id)
 
+        # Audit logging
+        audit_logger = get_audit_logger()
+        audit_logger.log_event(
+            AuditEventType.API_KEY_REVOKED,
+            user_id=user_id,
+            resource="api_key",
+            action="revoke",
+            details={"key_id": key_id, "key_name": api_key.name}
+        )
+
     def rotate_api_key(self, key_id: str, user_id: str, name: Optional[str] = None) -> Tuple[str, APIKey]:
         """Rotate an existing API key."""
         if key_id not in self._api_keys:
@@ -392,15 +447,28 @@ class AuthManager:
 
         # Revoke old key
         old_key.is_active = False
+        self._save_api_keys()
 
         # Generate new key with same properties
         new_name = name or f"{old_key.name} (rotated)"
-        return self.generate_api_key(
+        new_key, new_key_obj = self.generate_api_key(
             user_id=user_id,
             name=new_name,
             expiration_days=None,  # Keep existing expiration logic
             rate_limit=old_key.rate_limit
         )
+
+        # Audit logging for key rotation
+        audit_logger = get_audit_logger()
+        audit_logger.log_event(
+            AuditEventType.API_KEY_ROTATED,
+            user_id=user_id,
+            resource="api_key",
+            action="rotate",
+            details={"old_key_id": key_id, "old_key_name": old_key.name, "new_key_id": new_key_obj.id, "new_key_name": new_key_obj.name}
+        )
+
+        return new_key, new_key_obj
 
     def list_user_api_keys(self, user_id: str) -> List[APIKey]:
         """List all API keys for a user."""
@@ -409,7 +477,20 @@ class AuthManager:
     def check_permission(self, user: User, permission: Permission) -> bool:
         """Check if user has a specific permission."""
         user_permissions = ROLE_PERMISSIONS.get(user.role, [])
-        return permission in user_permissions
+        has_permission = permission in user_permissions
+
+        # Audit logging for permission checks
+        audit_logger = get_audit_logger()
+        audit_logger.log_event(
+            AuditEventType.PERMISSION_CHECK,
+            user_id=user.id,
+            resource="permission",
+            action="check",
+            status="success" if has_permission else "failure",
+            details={"permission": permission.value, "user_role": user.role.value, "has_permission": has_permission}
+        )
+
+        return has_permission
 
     def create_jwt_token(self, user: User, expires_delta: Optional[timedelta] = None) -> str:
         """Create JWT token for user."""
@@ -434,17 +515,54 @@ class AuthManager:
             payload = jwt.decode(token, self._jwt_secret, algorithms=["HS256"])
             user_id: str = payload.get("sub")
             if user_id is None:
+                # Audit logging for failed JWT validation
+                audit_logger = get_audit_logger()
+                audit_logger.log_event(
+                    AuditEventType.AUTHENTICATION_FAILURE,
+                    resource="jwt_token",
+                    action="validate",
+                    status="failure",
+                    details={"reason": "missing_user_id"}
+                )
                 return None
 
             user = self.get_user(user_id)
             if user is None or not user.is_active:
+                # Audit logging for failed JWT validation
+                audit_logger = get_audit_logger()
+                audit_logger.log_event(
+                    AuditEventType.AUTHENTICATION_FAILURE,
+                    resource="jwt_token",
+                    action="validate",
+                    status="failure",
+                    details={"reason": "user_not_found_or_inactive", "user_id": user_id}
+                )
                 return None
 
             # Update last login
             self.update_user_last_login(user.id)
 
+            # Audit logging for successful JWT validation
+            audit_logger = get_audit_logger()
+            audit_logger.log_event(
+                AuditEventType.AUTHENTICATION_SUCCESS,
+                user_id=user.id,
+                resource="jwt_token",
+                action="validate",
+                details={"username": user.username}
+            )
+
             return user
-        except JWTError:
+        except JWTError as e:
+            # Audit logging for failed JWT validation
+            audit_logger = get_audit_logger()
+            audit_logger.log_event(
+                AuditEventType.AUTHENTICATION_FAILURE,
+                resource="jwt_token",
+                action="validate",
+                status="failure",
+                details={"reason": "jwt_decode_error", "error": str(e)}
+            )
             return None
 
     def get_user_rate_limit(self, user_id: str) -> Optional[int]:
