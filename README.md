@@ -2386,8 +2386,30 @@ python cli.py lint
 # Type checking with mypy
 python cli.py typecheck
 
+# Security scanning (Bandit + Safety)
+python cli.py security
+
 # Run all checks
-python cli.py check  # format + lint + typecheck + tests
+python cli.py check  # format + lint + typecheck + tests + security
+```
+
+#### Security Scanning
+
+AstraGuard AI includes automated security scanning to detect vulnerabilities:
+
+```bash
+# Install security tools
+pip install -r config/requirements-dev.txt
+
+# Run Bandit (static security analysis)
+bandit -r core anomaly state_machine memory_engine
+
+# Run Safety (dependency vulnerability scanning)
+safety check --file=config/requirements.txt
+safety check --file=config/requirements-dev.txt
+
+# Run all security checks (via test script)
+./run_tests.sh --quality
 ```
 
 ### Docker Setup (Alternative)

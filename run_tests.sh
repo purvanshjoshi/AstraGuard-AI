@@ -152,6 +152,18 @@ if [ "$RUN_QUALITY" = true ]; then
         bandit -r core anomaly state_machine memory_engine -ll -q 2>/dev/null || true
         echo -e "${GREEN}✅ Security scan complete${NC}"
     fi
+    
+    # Safety (vulnerability scanning)
+    if command -v safety &> /dev/null; then
+        echo -e "${YELLOW}🔒 Running dependency vulnerability scan...${NC}"
+        safety check --file=config/requirements.txt --quiet
+        safety check --file=config/requirements-dev.txt --quiet
+        if [ $? -eq 0 ]; then
+            echo -e "${GREEN}✅ No vulnerabilities found${NC}"
+        else
+            echo -e "${RED}⚠️  Vulnerabilities detected${NC}"
+        fi
+    fi
 fi
 
 # Summary
