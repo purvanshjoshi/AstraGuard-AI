@@ -274,7 +274,10 @@ class TestResourceMonitorSingleton:
         
         # Reset singleton to force reload
         from core import resource_monitor as rm
+        from core.secrets import get_secrets_manager
+        
         rm._resource_monitor = None
+        get_secrets_manager().reload_cache()
         
         monitor = get_resource_monitor()
         
