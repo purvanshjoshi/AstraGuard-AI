@@ -26,6 +26,7 @@ from astraguard.swarm.types import (
 from astraguard.swarm.bus import SwarmMessageBus
 from astraguard.swarm.compressor import StateCompressor, CompressionStats
 from astraguard.swarm.registry import SwarmRegistry, PeerState
+from astraguard.swarm.health_broadcaster import HealthBroadcaster, BroadcastMetrics
 
 __all__ = [
     # Models (Issue #397)
@@ -50,4 +51,7 @@ __all__ = [
     # Registry (Issue #400)
     "SwarmRegistry",
     "PeerState",
+    # Health Broadcasting (Issue #401)
+    "HealthBroadcaster",
+    "BroadcastMetrics",
 ]
