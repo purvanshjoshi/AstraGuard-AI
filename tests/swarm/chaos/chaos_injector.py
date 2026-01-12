@@ -12,14 +12,17 @@ Extends failure_injector.py with advanced chaos methods:
 import asyncio
 import subprocess
 import time
-from typing import List, Dict, Any
+from typing import List, Dict, Any, Optional, TYPE_CHECKING
 import docker
+
+if TYPE_CHECKING:
+    from docker.client import DockerClient
 
 
 class ChaosInjectorExtensions:
     """Advanced chaos injection methods for swarm resilience testing."""
     
-    def __init__(self, docker_client: docker.DockerClient = None):
+    def __init__(self, docker_client: Optional["DockerClient"] = None):
         """Initialize chaos injector with docker client."""
         self.docker = docker_client or docker.from_env()
         self.active_chaos = {}  # Track active chaos scenarios

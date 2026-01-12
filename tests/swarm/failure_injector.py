@@ -15,10 +15,13 @@ import asyncio
 import logging
 from dataclasses import dataclass
 from datetime import datetime, timedelta
-from typing import List, Optional, Callable, Dict, Any
+from typing import List, Optional, Callable, Dict, Any, TYPE_CHECKING
 from enum import Enum
 import subprocess
 import docker
+
+if TYPE_CHECKING:
+    from docker.client import DockerClient
 
 logger = logging.getLogger(__name__)
 
@@ -62,7 +65,7 @@ class FailureConfig:
 class FailureInjector:
     """Injects failures into running swarm."""
     
-    def __init__(self, docker_client: Optional[docker.DockerClient] = None):
+    def __init__(self, docker_client: Optional["DockerClient"] = None):
         """Initialize failure injector."""
         self.docker = docker_client or docker.from_env()
         self.active_failures: Dict[str, FailureConfig] = {}

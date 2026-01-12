@@ -16,9 +16,12 @@ import asyncio
 import time
 from dataclasses import dataclass
 from enum import Enum
-from typing import Dict, List, Optional, Any
+from typing import Dict, List, Optional, Any, TYPE_CHECKING
 import docker
 from datetime import datetime
+
+if TYPE_CHECKING:
+    from docker.client import DockerClient
 
 
 class AnomalySeverity(Enum):
@@ -71,7 +74,7 @@ class AnomalyInjector:
     - #413: Safety simulator (blocks unsafe recovery)
     """
     
-    def __init__(self, docker_client: docker.DockerClient, network_name: str = "isl-net"):
+    def __init__(self, docker_client: "DockerClient", network_name: str = "isl-net"):
         """
         Initialize anomaly injector.
         
