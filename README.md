@@ -14,6 +14,11 @@
   [![Node.js](https://img.shields.io/badge/node.js-16+-6DA55F?style=for-the-badge&logo=node.js&logoColor=white)](https://nodejs.org/)
   [![FastAPI](https://img.shields.io/badge/FastAPI-005571?style=for-the-badge&logo=fastapi)](https://fastapi.tiangolo.com/)
 
+  ---
+  
+ # [![whatsapp](https://img.shields.io/badge/whatsapp-005571?style=for-the-badge&logo=whatsapp)](https://chat.whatsapp.com/Ka6WKpDdKIxInvpLBO1nCB)
+  
+
   <p align="center">
     <a href="docs/TECHNICAL.md"><strong>📚 Documentation</strong></a> •
     <a href="docs/TECHNICAL_REPORT.md"><strong>📄 Technical Report</strong></a> •
@@ -24,7 +29,7 @@
   <p align="center">
     <a href=".github/ISSUE_TEMPLATE/bug_report.yml">🐛 Report Bug</a> •
     <a href=".github/ISSUE_TEMPLATE/feature_request.yml">✨ Request Feature</a> •
-    <a href="https://chat.whatsapp.com/HZXk0vo62945S33qTXheON">💬 Join WhatsApp Group</a>
+    <a href="https://chat.whatsapp.com/Ka6WKpDdKIxInvpLBO1nCB">💬 Join WhatsApp Group</a>
   </p>
 
   ---
@@ -2260,6 +2265,52 @@ python cli.py config --validate-policies
 
 # Run initial system tests
 python cli.py test --suite smoke
+```
+
+#### Step 9: Build the Application (Optional)
+
+AstraGuard AI provides cross-platform build scripts for automated setup:
+
+**Option A: Python Build Script (Recommended - Cross-platform)**
+
+```bash
+# Works on Windows, Linux, and macOS
+python build.py
+```
+
+**Option B: Bash Script (Linux/macOS)**
+
+```bash
+# Make executable and run
+chmod +x build.sh
+./build.sh
+```
+
+**Option C: Windows Batch Script**
+
+```batch
+# Run on Windows Command Prompt
+build.bat
+```
+
+**What the build script does:**
+- ✅ Checks for required tools (Python, npm)
+- ✅ Installs Python dependencies from `requirements.txt`
+- ✅ Builds the Next.js frontend in `frontend/as_lp/`
+- ✅ Validates all installations
+- ✅ Provides clear error messages and next steps
+
+**Manual Build (if scripts fail):**
+
+```bash
+# Install Python dependencies
+pip install -r requirements.txt
+
+# Build frontend
+cd frontend/as_lp
+npm install
+npm run build
+cd ../..
 ```
 
 ### Available Commands
