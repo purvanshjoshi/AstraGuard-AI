@@ -40,7 +40,7 @@
 
 ---
 
-## 🏆 Our Amazing Contributors
+## 🏆 Our Amazing Contributors:-
 
 **A huge thank you to all the talented developers who have contributed to AstraGuard AI**
 
